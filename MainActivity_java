@@ -1,0 +1,197 @@
+package com.byte_buster.calculator20;
+
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
+
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+    double firstnum = 0.0;
+    String operation;
+    boolean oppPressed = false;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+
+        Button num0 = findViewById(R.id.num0);
+        Button num1 = findViewById(R.id.num1);
+        Button num2 = findViewById(R.id.num2);
+        Button num3 = findViewById(R.id.num3);
+        Button num4 = findViewById(R.id.num4);
+        Button num5 = findViewById(R.id.num5);
+        Button num6 = findViewById(R.id.num6);
+        Button num7 = findViewById(R.id.num7);
+        Button num8 = findViewById(R.id.num8);
+        Button num9 = findViewById(R.id.num9);
+
+        Button c = findViewById(R.id.c);
+        Button mod = findViewById(R.id.mod);
+        Button mul = findViewById(R.id.mul);
+        Button div = findViewById(R.id.div);
+        Button sub = findViewById(R.id.sub);
+        Button add = findViewById(R.id.add);
+        Button del = findViewById(R.id.del);
+        Button point = findViewById(R.id.point);
+        Button ans = findViewById(R.id.ans);
+        Button root = findViewById(R.id.root);
+        Button openBrace = findViewById(R.id.openBrace);
+        Button closeBrace = findViewById(R.id.closeBrace);
+        Button sin = findViewById(R.id.sin);
+        Button cos = findViewById(R.id.cos);
+        Button tan = findViewById(R.id.tan);
+        Button log = findViewById(R.id.log);
+
+        TextView screen = findViewById(R.id.screen);
+        screen.setText("0");
+
+        ArrayList<Button> nums = new ArrayList<>();
+        nums.add(num0);
+        nums.add(num1);
+        nums.add(num2);
+        nums.add(num3);
+        nums.add(num4);
+        nums.add(num5);
+        nums.add(num6);
+        nums.add(num7);
+        nums.add(num8);
+        nums.add(num9);
+
+        ArrayList<Button> opps = new ArrayList<>();
+        opps.add(div);
+        opps.add(mul);
+        opps.add(add);
+        opps.add(sub);
+        opps.add(mod);
+        opps.add(root);
+        opps.add(sin);
+        opps.add(cos);
+        opps.add(tan);
+        opps.add(log);
+
+        for(Button b: nums){
+            b.setOnClickListener(view ->{
+                String currentScreenText = screen.getText().toString();
+                if (currentScreenText.equals("0")){
+                    screen.setText(b.getText().toString());
+                }else{
+                    screen.setText(currentScreenText + b.getText().toString());
+                }
+            });
+        }
+        c.setOnClickListener(view -> {
+            firstnum=0;
+            screen.setText("0");
+        });
+        for(Button b: opps){
+            b.setOnClickListener(view -> {
+                if(!oppPressed) {
+                    firstnum = Double.parseDouble(screen.getText().toString());
+                    operation = b.getText().toString();
+                    screen.setText(screen.getText().toString()+ " " + operation + " ");
+                    oppPressed = true;
+                }
+            });
+        }
+        sin.setOnClickListener(view -> {
+            double firstnum = Double.parseDouble(screen.getText().toString());
+            firstnum = Math.sin(firstnum);
+            screen.setText(String.valueOf(firstnum));
+        });
+        cos.setOnClickListener(view -> {
+            double firstnum = Double.parseDouble(screen.getText().toString());
+            firstnum = Math.cos(firstnum);
+            screen.setText(String.valueOf(firstnum));
+        });
+        tan.setOnClickListener(view -> {
+            double firstnum = Double.parseDouble(screen.getText().toString());
+            firstnum = Math.tan(firstnum);
+            screen.setText(String.valueOf(firstnum));
+        });
+        log.setOnClickListener(view -> {
+            double firstnum = Double.parseDouble(screen.getText().toString());
+            firstnum = Math.log10(firstnum);
+            screen.setText(String.valueOf(firstnum));
+        });
+
+        del.setOnClickListener(view -> {
+            String num = screen.getText().toString();
+            if (num.length()>1){
+                screen.setText(num.substring(0,num.length()-1));
+            } else if (num.length()==1 && !num.equals("0")) {
+                screen.setText("0");
+            }
+        });
+        point.setOnClickListener(view -> {
+            if(!screen.getText().toString().contains(".")){
+                screen.setText(screen.getText().toString() + ".");
+            }
+        });
+        openBrace.setOnClickListener(view -> {
+            if(!screen.getText().toString().contains("(")){
+                screen.setText(screen.getText().toString() + "(");
+            }
+        });
+        closeBrace.setOnClickListener(view -> {
+            if(!screen.getText().toString().contains(")")){
+                screen.setText(screen.getText().toString() + ")");
+            }
+        });
+        root.setOnClickListener(view -> {
+            double firstnum = Double.parseDouble(screen.getText().toString());
+            firstnum = Math.sqrt(firstnum);
+            screen.setText(String.valueOf(firstnum));
+        });
+        mod.setOnClickListener(view -> {
+            double firstnum = Double.parseDouble(screen.getText().toString());
+            firstnum = firstnum/100.0;
+            screen.setText(String.valueOf(firstnum));
+        });
+        ans.setOnClickListener(view -> {
+            if (oppPressed){
+                String[] parts = screen.getText().toString().split(" ");
+
+                if (parts.length == 3){
+                    double SecondNum = Double.parseDouble(parts[2]);
+                    double result;
+
+                    switch (operation){
+                        case "/":
+                            result = firstnum / SecondNum;
+                            break;
+                        case "X":
+                            result = firstnum * SecondNum;
+                            break;
+                        case "+":
+                            result = firstnum + SecondNum;
+                            break;
+                        case "-":
+                            result = firstnum - SecondNum;
+                            break;
+                        default:
+                            result = firstnum * SecondNum;
+                    }
+                    screen.setText(String.valueOf(result));
+                    firstnum = result;
+                    oppPressed = false;
+                }
+            }
+        });
+    }
+}
